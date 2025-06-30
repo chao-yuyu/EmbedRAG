@@ -1,16 +1,16 @@
 # EmbedRAG - Embedding Model Training Framework
 
-一個基於Transformer的embedding模型訓練框架，支持LoRA、QLoRA和全參數微調三種訓練方式，專為檢索增強生成(RAG)場景設計。
+A Transformer-based embedding model training framework supporting LoRA, QLoRA, and full parameter fine-tuning, specifically designed for Retrieval-Augmented Generation (RAG) scenarios.
 
-## 功能特色
+## Features
 
-- 🚀 支持多種微調策略：LoRA、QLoRA(4-bit/8-bit)、全參數微調
-- 📊 詳細的訓練日誌和監控
-- 🔧 靈活的參數配置
-- 💾 自動模型保存和檢查點管理
-- 🔄 LoRA adapter與base model的無縫合併
+- 🚀 Multiple fine-tuning strategies: LoRA, QLoRA (4-bit/8-bit), full parameter fine-tuning
+- 📊 Comprehensive training logs and monitoring
+- 🔧 Flexible parameter configuration
+- 💾 Automatic model saving and checkpoint management
+- 🔄 Seamless LoRA adapter and base model merging
 
-## 系統需求
+## System Requirements
 
 - Python 3.10+
 - CUDA GPU
@@ -19,38 +19,38 @@
 - PEFT
 - Accelerate
 
-## 安裝依賴
+## Installation
 
 ```bash
 pip install torch transformers peft accelerate datasets safetensors bitsandbytes
 ```
 
-## 訓練資料格式
+## Training Data Format
 
-訓練資料使用JSONL格式，每行包含一個JSON對象，包含以下字段：
+Training data uses JSONL format, with each line containing a JSON object with the following fields:
 
 ```json
 {
-  "query": "查詢文本",
-  "pos": ["正例文本1", "正例文本2"],
-  "neg": ["負例文本1", "負例文本2", "負例文本3"]
+  "query": "query text",
+  "pos": ["positive text 1", "positive text 2"],
+  "neg": ["negative text 1", "negative text 2", "negative text 3"]
 }
 ```
 
-### 範例資料
+### Sample Data
 
 ```json
-{"query": "台北最好的牛肉麵店", "pos": ["老張牛肉麵館位於台北市中心，以其濃郁湯頭和嫩滑牛肉聞名，是當地人推薦的必吃美食"], "neg": ["台北101觀景台提供360度城市全景", "最新iPhone手機規格比較和價格分析", "如何在家種植蔬菜的完整指南"]}
-{"query": "機器學習入門教程", "pos": ["Python機器學習基礎：從線性回歸到深度學習的完整學習路徑，包含實作範例和代碼"], "neg": ["台北夜市美食推薦清單", "2025年股市投資策略分析", "寵物狗的日常照護注意事項"]}
+{"query": "Best beef noodle shop in Taipei", "pos": ["Lao Zhang Beef Noodle Restaurant is located in the center of Taipei, famous for its rich broth and tender beef, recommended by locals as a must-try delicacy"], "neg": ["Taipei 101 Observatory offers 360-degree city panoramic views", "Latest iPhone specifications comparison and price analysis", "Complete guide to growing vegetables at home"]}
+{"query": "Machine learning tutorial for beginners", "pos": ["Python Machine Learning Basics: Complete learning path from linear regression to deep learning, including practical examples and code"], "neg": ["Taipei night market food recommendation list", "2025 stock market investment strategy analysis", "Daily care tips for pet dogs"]}
 ```
 
-更多範例請參考 `datasets/sample_data.jsonl`
+See `datasets/sample_data.jsonl` for more examples.
 
-## 訓練指令
+## Training Commands
 
-### 1. LoRA 訓練
+### 1. LoRA Training
 
-適合有限GPU記憶體的場景，訓練效率高：
+Suitable for limited GPU memory scenarios with high training efficiency:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py \
@@ -69,9 +69,9 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
   --warmup_proportion 0.05
 ```
 
-### 2. QLoRA 訓練 (4-bit量化)
+### 2. QLoRA Training (4-bit quantization)
 
-進一步節省記憶體，適合大模型微調：
+Further memory savings, suitable for large model fine-tuning:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py \
@@ -91,9 +91,9 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
   --warmup_proportion 0.05
 ```
 
-### 3. 全參數微調
+### 3. Full Parameter Fine-tuning
 
-適合充足資源環境，效果通常最佳：
+Suitable for abundant resource environments, usually achieves best performance:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0,1 python train.py \
@@ -112,31 +112,31 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py \
   --warmup_proportion 0.05
 ```
 
-## 參數說明
+## Parameter Description
 
-| 參數 | 說明 | 預設值 |
-|------|------|--------|
-| `model_name_or_path` | 基礎模型路徑 | 必填 |
-| `finetune_type` | 微調類型: lora/qlora/full | qlora |
-| `quantization_bits` | QLoRA量化位數: 4/8 | 4 |
-| `train_dataset` | 訓練資料路徑 | 必填 |
-| `output_dir` | 輸出目錄 | 必填 |
-| `batch_size` | 批次大小 | 必填 |
-| `lr` | 學習率 | 2e-5 |
-| `epochs` | 訓練輪數 | 2 |
-| `neg_nums` | 負例數量 | 2 |
-| `temperature` | 溫度參數 | 0.02 |
-| `query_max_len` | 查詢最大長度 | 256 |
-| `passage_max_len` | 文檔最大長度 | 1024 |
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `model_name_or_path` | Base model path | Required |
+| `finetune_type` | Fine-tuning type: lora/qlora/full | qlora |
+| `quantization_bits` | QLoRA quantization bits: 4/8 | 4 |
+| `train_dataset` | Training data path | Required |
+| `output_dir` | Output directory | Required |
+| `batch_size` | Batch size | Required |
+| `lr` | Learning rate | 2e-5 |
+| `epochs` | Number of epochs | 2 |
+| `neg_nums` | Number of negative examples | 2 |
+| `temperature` | Temperature parameter | 0.02 |
+| `query_max_len` | Maximum query length | 256 |
+| `passage_max_len` | Maximum passage length | 1024 |
 | `lora_r` | LoRA rank | 8 |
 | `lora_alpha` | LoRA alpha | 32 |
 | `lora_dropout` | LoRA dropout | 0.1 |
 
-## 模型合併
+## Model Merging
 
-### LoRA/QLoRA 模型合併
+### LoRA/QLoRA Model Merging
 
-訓練完成後，需要將LoRA adapter與base model合併：
+After training, merge the LoRA adapter with the base model:
 
 ```bash
 python merge.py \
@@ -146,60 +146,60 @@ python merge.py \
     --training_precision "float32"
 ```
 
-### 合併參數說明
+### Merging Parameters
 
-- `base_model_path`: 原始基礎模型路徑
-- `lora_adapter_path`: LoRA adapter的safetensors檔案路徑
-- `output_path`: 合併後模型的輸出路徑
-- `training_precision`: 訓練時使用的精度 (float32/bfloat16)
+- `base_model_path`: Original base model path
+- `lora_adapter_path`: LoRA adapter safetensors file path
+- `output_path`: Merged model output path
+- `training_precision`: Precision used during training (float32/bfloat16)
 
-## 訓練監控
+## Training Monitoring
 
-### TensorBoard 監控
+### TensorBoard Monitoring
 
 ```bash
 tensorboard --logdir=/path/to/output/runs
 ```
 
-### 訓練日誌
+### Training Logs
 
-訓練過程會生成以下日誌檔案：
+The training process generates the following log files:
 
-- `detailed_training_logs.json`: 詳細的step-by-step訓練日誌
-- `training_losses.json`: 每個epoch的平均loss
-- `training_summary_report.json`: 訓練總結報告
+- `detailed_training_logs.json`: Detailed step-by-step training logs
+- `training_losses.json`: Average loss per epoch
+- `training_summary_report.json`: Training summary report
 
-## 輸出結構
+## Output Structure
 
-訓練完成後的輸出目錄結構：
+Output directory structure after training completion:
 
 ```
 output_dir/
-├── final/                        # 最終模型
-│   ├── adapter_model.safetensors # LoRA adapter (僅LoRA/QLoRA)
-│   ├── adapter_config.json       # LoRA配置 (僅LoRA/QLoRA)  
-│   ├── training_config.json      # 訓練配置
-│   └── tokenizer files...        # Tokenizer檔案
-├── checkpoint-epoch-{N}/         # 各epoch檢查點
-├── detailed_training_logs.json   # 詳細訓練日誌
-├── training_losses.json          # Loss記錄
-├── training_summary_report.json  # 訓練總結
-└── runs/                         # TensorBoard日誌
+├── final/                        # Final model
+│   ├── adapter_model.safetensors # LoRA adapter (LoRA/QLoRA only)
+│   ├── adapter_config.json       # LoRA configuration (LoRA/QLoRA only)
+│   ├── training_config.json      # Training configuration
+│   └── tokenizer files...        # Tokenizer files
+├── checkpoint-epoch-{N}/         # Checkpoints for each epoch
+├── detailed_training_logs.json   # Detailed training logs
+├── training_losses.json          # Loss records
+├── training_summary_report.json  # Training summary
+└── runs/                         # TensorBoard logs
 ```
 
-## 使用範例
+## Usage Examples
 
-### 1. 準備訓練資料
+### 1. Prepare Training Data
 
 ```python
-# 建立訓練資料
+# Create training data
 import json
 
 data = [
     {
-        "query": "你的查詢",
-        "pos": ["相關文檔1", "相關文檔2"],
-        "neg": ["不相關文檔1", "不相關文檔2", "不相關文檔3"]
+        "query": "your query",
+        "pos": ["relevant document 1", "relevant document 2"],
+        "neg": ["irrelevant document 1", "irrelevant document 2", "irrelevant document 3"]
     }
 ]
 
@@ -208,10 +208,10 @@ with open("train_data.jsonl", "w", encoding="utf-8") as f:
         f.write(json.dumps(item, ensure_ascii=False) + "\n")
 ```
 
-### 2. 執行訓練
+### 2. Execute Training
 
 ```bash
-# LoRA訓練
+# LoRA training
 python train.py \
   --model_name_or_path "Alibaba-NLP/gte-Qwen2-1.5B-instruct" \
   --finetune_type lora \
@@ -222,65 +222,70 @@ python train.py \
   --epochs 3
 ```
 
-### 3. 合併模型
+### 3. Merge Models
 
 ```bash
-# 合併LoRA adapter
+# Merge LoRA adapter
 python merge.py \
     --base_model_path "Alibaba-NLP/gte-Qwen2-1.5B-instruct" \
     --lora_adapter_path "output/lora_training/final/adapter_model.safetensors" \
     --output_path "output/merged_model"
 ```
 
-### 4. 使用合併後的模型
+### 4. Use Merged Model
 
 ```python
 from transformers import AutoModel, AutoTokenizer
 import torch
 
-# 載入模型
+# Load model
 model = AutoModel.from_pretrained("output/merged_model")
 tokenizer = AutoTokenizer.from_pretrained("output/merged_model")
 
-# 編碼文本
+# Encode text
 def encode_text(text):
     inputs = tokenizer(text, return_tensors="pt", max_length=512, truncation=True)
     with torch.no_grad():
         outputs = model(**inputs)
-        # 使用last token pooling
+        # Use last token pooling
         embeddings = outputs.last_hidden_state[:, -1, :]
         embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=-1)
     return embeddings
 
-# 範例使用
-query_embedding = encode_text("你的查詢文本")
-doc_embedding = encode_text("文檔內容")
+# Example usage
+query_embedding = encode_text("your query text")
+doc_embedding = encode_text("document content")
 
-# 計算相似度
+# Calculate similarity
 similarity = torch.cosine_similarity(query_embedding, doc_embedding)
-print(f"相似度: {similarity.item():.4f}")
+print(f"Similarity: {similarity.item():.4f}")
 ```
 
-## 注意事項
+## Notes
 
-1. **記憶體管理**: QLoRA需要較少GPU記憶體，適合資源受限環境
-2. **學習率調整**: 不同微調方式建議使用不同學習率 (Full: 1e-5, LoRA/QLoRA: 1e-4)
-3. **負例數量**: 建議根據GPU記憶體調整neg_nums參數
-4. **精度一致性**: 合併時確保training_precision與訓練時一致
+1. **Memory Management**: QLoRA requires less GPU memory, suitable for resource-constrained environments
+2. **Learning Rate Adjustment**: Different fine-tuning methods recommend different learning rates (Full: 1e-5, LoRA/QLoRA: 1e-4)
+3. **Negative Sample Count**: Adjust neg_nums parameter based on GPU memory
+4. **Precision Consistency**: Ensure training_precision matches training configuration during merging
 
-## 故障排除
+## Troubleshooting
 
-### 常見問題
+### Common Issues
 
-1. **CUDA OOM**: 減少batch_size或使用QLoRA
-2. **合併失敗**: 檢查LoRA配置是否與訓練時一致
-3. **精度不匹配**: 確保訓練和合併使用相同的精度設定
+1. **CUDA OOM**: Reduce batch_size or use QLoRA
+2. **Merge Failure**: Check if LoRA configuration matches training configuration
+3. **Precision Mismatch**: Ensure training and merging use the same precision settings
 
-### 效能優化
+### Performance Optimization
 
-- 使用多GPU: 在CUDA_VISIBLE_DEVICES中指定多個GPU
-- 調整num_workers: 根據CPU核心數調整DataLoader的num_workers
-- 使用梯度累積: 增加gradient_accumulation_steps以模擬更大的batch size
+- Use multiple GPUs: Specify multiple GPUs in CUDA_VISIBLE_DEVICES
+- Adjust num_workers: Adjust DataLoader's num_workers based on CPU cores
+- Use gradient accumulation: Increase gradient_accumulation_steps to simulate larger batch sizes
+
+## Documentation
+
+- [English README](README.md)
+- [中文文档](README_zh.md)
 
 ## License
 
