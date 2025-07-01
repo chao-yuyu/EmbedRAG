@@ -1,14 +1,14 @@
 # EmbedRAG - Embedding Model Training Framework
 
-A Transformer-based General Text Embedding model training framework supporting LoRA, QLoRA, and full parameter fine-tuning, specifically designed for Retrieval-Augmented Generation (RAG) scenarios.
+A Transformer-based General Text Embedding model training framework that supports LoRA, QLoRA, and full parameter fine-tuning methods, specifically designed for Retrieval Augmented Generation (RAG) scenarios.
 
 ## Features
 
-- 🚀 Multiple fine-tuning strategies: LoRA, QLoRA (4-bit/8-bit), full parameter fine-tuning
-- 📊 Comprehensive training logs and monitoring
+- 🚀 Support multiple fine-tuning strategies: LoRA, QLoRA (4-bit/8-bit), full parameter fine-tuning
+- 📊 Detailed training logs and monitoring
 - 🔧 Flexible parameter configuration
 - 💾 Automatic model saving and checkpoint management
-- 🔄 Seamless LoRA adapter and base model merging
+- 🔄 Seamless merging of LoRA adapters with base models
 
 ## System Requirements
 
@@ -19,7 +19,7 @@ A Transformer-based General Text Embedding model training framework supporting L
 - PEFT
 - Accelerate
 
-## Installation
+## Install Dependencies
 
 ```bash
 pip install torch transformers peft accelerate datasets safetensors bitsandbytes
@@ -31,26 +31,26 @@ Training data uses JSONL format, with each line containing a JSON object with th
 
 ```json
 {
-  "query": "query text",
-  "pos": ["positive text 1", "positive text 2"],
-  "neg": ["negative text 1", "negative text 2", "negative text 3"]
+  "query": "Query text",
+  "pos": ["Positive example 1", "Positive example 2"],
+  "neg": ["Negative example 1", "Negative example 2", "Negative example 3"]
 }
 ```
 
 ### Sample Data
 
 ```json
-{"query": "Best beef noodle shop in Taipei", "pos": ["Lao Zhang Beef Noodle Restaurant is located in the center of Taipei, famous for its rich broth and tender beef, recommended by locals as a must-try delicacy"], "neg": ["Taipei 101 Observatory offers 360-degree city panoramic views", "Latest iPhone specifications comparison and price analysis", "Complete guide to growing vegetables at home"]}
-{"query": "Machine learning tutorial for beginners", "pos": ["Python Machine Learning Basics: Complete learning path from linear regression to deep learning, including practical examples and code"], "neg": ["Taipei night market food recommendation list", "2025 stock market investment strategy analysis", "Daily care tips for pet dogs"]}
+{"query": "Best beef noodle restaurant in Taipei", "pos": ["Lao Zhang Beef Noodle Restaurant is located in downtown Taipei, famous for its rich broth and tender beef, recommended by locals as a must-try delicacy"], "neg": ["Taipei 101 Observatory offers 360-degree city panoramic views", "Latest iPhone specifications comparison and price analysis", "Complete guide on how to grow vegetables at home"]}
+{"query": "Machine learning beginner tutorial", "pos": ["Python Machine Learning Basics: Complete learning path from linear regression to deep learning, including practical examples and code"], "neg": ["Taipei night market food recommendation list", "2025 stock market investment strategy analysis", "Daily care considerations for pet dogs"]}
 ```
 
-See `datasets/sample_data.jsonl` for more examples.
+For more examples, please refer to `datasets/sample_data.jsonl`
 
 ## Training Commands
 
 ### 1. LoRA Training
 
-Suitable for limited GPU memory scenarios with high training efficiency:
+Suitable for scenarios with limited GPU memory, high training efficiency:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py \
@@ -71,7 +71,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
 
 ### 2. QLoRA Training (4-bit quantization)
 
-Further memory savings, suitable for large model fine-tuning:
+Further saves memory, suitable for large model fine-tuning:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py \
@@ -93,7 +93,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
 
 ### 3. Full Parameter Fine-tuning
 
-Suitable for abundant resource environments, usually achieves best performance:
+Suitable for environments with abundant resources, usually achieves the best results:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0,1 python train.py \
@@ -123,11 +123,11 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py \
 | `output_dir` | Output directory | Required |
 | `batch_size` | Batch size | Required |
 | `lr` | Learning rate | 1e-4 |
-| `epochs` | Number of epochs | 2 |
+| `epochs` | Training epochs | 2 |
 | `neg_nums` | Number of negative examples | 2 |
 | `temperature` | Temperature parameter | 0.02 |
 | `query_max_len` | Maximum query length | 256 |
-| `passage_max_len` | Maximum passage length | 1024 |
+| `passage_max_len` | Maximum document length | 1024 |
 | `lora_r` | LoRA rank | 8 |
 | `lora_alpha` | LoRA alpha | 32 |
 | `lora_dropout` | LoRA dropout | 0.1 |
@@ -136,7 +136,7 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py \
 
 ### LoRA/QLoRA Model Merging
 
-After training, merge the LoRA adapter with the base model:
+After training completion, you need to merge the LoRA adapter with the base model:
 
 ```bash
 python merge.py \
@@ -146,11 +146,11 @@ python merge.py \
     --training_precision "float32"
 ```
 
-### Merging Parameters
+### Merging Parameter Description
 
 - `base_model_path`: Original base model path
 - `lora_adapter_path`: LoRA adapter safetensors file path
-- `output_path`: Merged model output path
+- `output_path`: Output path for merged model
 - `training_precision`: Precision used during training (float32/bfloat16)
 
 ## Training Monitoring
@@ -166,7 +166,7 @@ tensorboard --logdir=/path/to/output/runs
 The training process generates the following log files:
 
 - `detailed_training_logs.json`: Detailed step-by-step training logs
-- `training_losses.json`: Average loss per epoch
+- `training_losses.json`: Average loss for each epoch
 - `training_summary_report.json`: Training summary report
 
 ## Output Structure
@@ -177,10 +177,10 @@ Output directory structure after training completion:
 output_dir/
 ├── final/                        # Final model
 │   ├── adapter_model.safetensors # LoRA adapter (LoRA/QLoRA only)
-│   ├── adapter_config.json       # LoRA configuration (LoRA/QLoRA only)
+│   ├── adapter_config.json       # LoRA configuration (LoRA/QLoRA only)  
 │   ├── training_config.json      # Training configuration
 │   └── tokenizer files...        # Tokenizer files
-├── checkpoint-epoch-{N}/         # Checkpoints for each epoch
+├── checkpoint-epoch-{N}/         # Checkpoint for each epoch
 ├── detailed_training_logs.json   # Detailed training logs
 ├── training_losses.json          # Loss records
 ├── training_summary_report.json  # Training summary
@@ -197,9 +197,9 @@ import json
 
 data = [
     {
-        "query": "your query",
-        "pos": ["relevant document 1", "relevant document 2"],
-        "neg": ["irrelevant document 1", "irrelevant document 2", "irrelevant document 3"]
+        "query": "Your query",
+        "pos": ["Relevant document 1", "Relevant document 2"],
+        "neg": ["Irrelevant document 1", "Irrelevant document 2", "Irrelevant document 3"]
     }
 ]
 
@@ -222,7 +222,7 @@ python train.py \
   --epochs 3
 ```
 
-### 3. Merge Models
+### 3. Merge Model
 
 ```bash
 # Merge LoRA adapter
@@ -232,7 +232,7 @@ python merge.py \
     --output_path "output/merged_model"
 ```
 
-### 4. Use Model Evaluation
+### 4. Model Evaluation Usage
 
 > **Note**: For complete usage examples, please refer to the `evaluation.ipynb` file
 
@@ -242,7 +242,7 @@ import torch.nn.functional as F
 from torch import Tensor
 from transformers import AutoTokenizer, AutoModel
 
-# Define last token pooling function to extract embeddings
+# Define last token pooling function to extract embeddings from the last valid token of each sequence
 def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
     left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
     if left_padding:
@@ -259,14 +259,14 @@ model = AutoModel.from_pretrained(
     model_path,
     torch_dtype=torch.float32,
     trust_remote_code=True,
-    device_map="auto"  # Automatically distribute across GPUs
+    device_map="auto"  # Automatic GPU allocation
 )
 
 # Define queries and documents
-queries = ["your query text"]
-documents = ["document 1", "document 2", "document 3"]
+queries = ["Your query text"]
+documents = ["Document 1", "Document 2", "Document 3"]
 
-# Merge queries and documents for batch processing
+# Combine queries and documents for batch processing
 input_texts = queries + documents
 batch_dict = tokenizer(
     input_texts, 
@@ -276,11 +276,11 @@ batch_dict = tokenizer(
     return_tensors='pt'
 )
 
-# Move to GPU if available
+# Move to GPU (if available)
 if torch.cuda.is_available():
     batch_dict = {k: v.cuda() for k, v in batch_dict.items()}
 
-# Get model outputs and extract embeddings
+# Get model output and extract embeddings
 with torch.no_grad():
     outputs = model(**batch_dict, output_hidden_states=True)
     embeddings = last_token_pool(outputs.hidden_states[-1], batch_dict['attention_mask'])
@@ -294,33 +294,34 @@ for i, query in enumerate(queries):
     print(f"Query: {query}")
     query_scores = scores[i].tolist()
     for j, (doc, score) in enumerate(zip(documents, query_scores)):
-        print(f"  Document {j+1}: {score:.2f} - {doc}")
+        print(f"  Document{j+1}: {score:.2f} - {doc}")
+```
 
-## Notes
+## Important Notes
 
 1. **Memory Management**: QLoRA requires less GPU memory, suitable for resource-constrained environments
 2. **Learning Rate Adjustment**: Different fine-tuning methods recommend different learning rates (Full: 1e-5, LoRA/QLoRA: 1e-4)
-3. **Negative Sample Count**: Adjust neg_nums parameter based on GPU memory
-4. **Precision Consistency**: Ensure training_precision matches training configuration during merging
+3. **Number of Negative Examples**: Recommend adjusting neg_nums parameter based on GPU memory
+4. **Precision Consistency**: Ensure training_precision is consistent with training when merging
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **CUDA OOM**: Reduce batch_size or use QLoRA
-2. **Merge Failure**: Check if LoRA configuration matches training configuration
+2. **Merge Failure**: Check if LoRA configuration is consistent with training
 3. **Precision Mismatch**: Ensure training and merging use the same precision settings
 
 ### Performance Optimization
 
 - Use multiple GPUs: Specify multiple GPUs in CUDA_VISIBLE_DEVICES
 - Adjust num_workers: Adjust DataLoader's num_workers based on CPU cores
-- Use gradient accumulation: Increase gradient_accumulation_steps to simulate larger batch sizes
+- Use gradient accumulation: Increase gradient_accumulation_steps to simulate larger batch size
 
 ## Documentation
 
-- [📖 English README](README.md)
-- [📖 中文說明文檔](README_zh.md)
+- [English README](README.md)
+- [Chinese README](README_zh.md)
 
 ## License
 

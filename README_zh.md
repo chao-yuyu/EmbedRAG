@@ -318,6 +318,11 @@ for i, query in enumerate(queries):
 - 調整num_workers: 根據CPU核心數調整DataLoader的num_workers
 - 使用梯度累積: 增加gradient_accumulation_steps以模擬更大的batch size
 
+## 文檔
+
+- [英文 README](README.md)
+- [中文 README](README_zh.md)
+
 ## License
 
 MIT License 
