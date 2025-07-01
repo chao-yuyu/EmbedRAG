@@ -234,32 +234,67 @@ python merge.py \
 
 ### 4. Use Merged Model
 
+> **Note**: For complete usage examples, please refer to the `eval.ipynb` file
+
 ```python
-from transformers import AutoModel, AutoTokenizer
 import torch
+import torch.nn.functional as F
+from torch import Tensor
+from transformers import AutoTokenizer, AutoModel
 
-# Load model
-model = AutoModel.from_pretrained("output/merged_model")
-tokenizer = AutoTokenizer.from_pretrained("output/merged_model")
+# Define last token pooling function to extract embeddings
+def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
+    left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
+    if left_padding:
+        return last_hidden_states[:, -1]
+    else:
+        sequence_lengths = attention_mask.sum(dim=1) - 1
+        batch_size = last_hidden_states.shape[0]
+        return last_hidden_states[torch.arange(batch_size, device=last_hidden_states.device), sequence_lengths]
 
-# Encode text
-def encode_text(text):
-    inputs = tokenizer(text, return_tensors="pt", max_length=512, truncation=True)
-    with torch.no_grad():
-        outputs = model(**inputs)
-        # Use last token pooling
-        embeddings = outputs.last_hidden_state[:, -1, :]
-        embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=-1)
-    return embeddings
+# Load model and tokenizer
+model_path = "your/merged/model/path"  # Replace with your merged model path
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+model = AutoModel.from_pretrained(
+    model_path,
+    torch_dtype=torch.float32,
+    trust_remote_code=True,
+    device_map="auto"  # Automatically distribute across GPUs
+)
 
-# Example usage
-query_embedding = encode_text("your query text")
-doc_embedding = encode_text("document content")
+# Define queries and documents
+queries = ["your query text"]
+documents = ["document 1", "document 2", "document 3"]
 
-# Calculate similarity
-similarity = torch.cosine_similarity(query_embedding, doc_embedding)
-print(f"Similarity: {similarity.item():.4f}")
-```
+# Merge queries and documents for batch processing
+input_texts = queries + documents
+batch_dict = tokenizer(
+    input_texts, 
+    max_length=512, 
+    padding=True, 
+    truncation=True, 
+    return_tensors='pt'
+)
+
+# Move to GPU if available
+if torch.cuda.is_available():
+    batch_dict = {k: v.cuda() for k, v in batch_dict.items()}
+
+# Get model outputs and extract embeddings
+with torch.no_grad():
+    outputs = model(**batch_dict, output_hidden_states=True)
+    embeddings = last_token_pool(outputs.hidden_states[-1], batch_dict['attention_mask'])
+    embeddings = F.normalize(embeddings, p=2, dim=1)
+
+# Calculate similarity scores
+scores = (embeddings[:len(queries)] @ embeddings[len(queries):].T) * 100
+
+# Display results
+for i, query in enumerate(queries):
+    print(f"Query: {query}")
+    query_scores = scores[i].tolist()
+    for j, (doc, score) in enumerate(zip(documents, query_scores)):
+        print(f"  Document {j+1}: {score:.2f} - {doc}")
 
 ## Notes
 

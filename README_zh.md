@@ -234,31 +234,67 @@ python merge.py \
 
 ### 4. 使用合併後的模型
 
+> **注意**: 完整的使用範例請參考 `eval.ipynb` 文件
+
 ```python
-from transformers import AutoModel, AutoTokenizer
 import torch
+import torch.nn.functional as F
+from torch import Tensor
+from transformers import AutoTokenizer, AutoModel
 
-# 載入模型
-model = AutoModel.from_pretrained("output/merged_model")
-tokenizer = AutoTokenizer.from_pretrained("output/merged_model")
+# 定義last token pooling函數，提取每個序列中最後一個有效token的embedding
+def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
+    left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
+    if left_padding:
+        return last_hidden_states[:, -1]
+    else:
+        sequence_lengths = attention_mask.sum(dim=1) - 1
+        batch_size = last_hidden_states.shape[0]
+        return last_hidden_states[torch.arange(batch_size, device=last_hidden_states.device), sequence_lengths]
 
-# 編碼文本
-def encode_text(text):
-    inputs = tokenizer(text, return_tensors="pt", max_length=512, truncation=True)
-    with torch.no_grad():
-        outputs = model(**inputs)
-        # 使用last token pooling
-        embeddings = outputs.last_hidden_state[:, -1, :]
-        embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=-1)
-    return embeddings
+# 載入模型和tokenizer
+model_path = "your/merged/model/path"  # 替換為你的合併模型路徑
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+model = AutoModel.from_pretrained(
+    model_path,
+    torch_dtype=torch.float32,
+    trust_remote_code=True,
+    device_map="auto"  # 自動分配GPU
+)
 
-# 範例使用
-query_embedding = encode_text("你的查詢文本")
-doc_embedding = encode_text("文檔內容")
+# 定義查詢和文檔
+queries = ["你的查詢文本"]
+documents = ["文檔1", "文檔2", "文檔3"]
 
-# 計算相似度
-similarity = torch.cosine_similarity(query_embedding, doc_embedding)
-print(f"相似度: {similarity.item():.4f}")
+# 合併查詢和文檔進行批次處理
+input_texts = queries + documents
+batch_dict = tokenizer(
+    input_texts, 
+    max_length=512, 
+    padding=True, 
+    truncation=True, 
+    return_tensors='pt'
+)
+
+# 移動到GPU（如果可用）
+if torch.cuda.is_available():
+    batch_dict = {k: v.cuda() for k, v in batch_dict.items()}
+
+# 獲取模型輸出並提取embeddings
+with torch.no_grad():
+    outputs = model(**batch_dict, output_hidden_states=True)
+    embeddings = last_token_pool(outputs.hidden_states[-1], batch_dict['attention_mask'])
+    embeddings = F.normalize(embeddings, p=2, dim=1)
+
+# 計算相似度分數
+scores = (embeddings[:len(queries)] @ embeddings[len(queries):].T) * 100
+
+# 顯示結果
+for i, query in enumerate(queries):
+    print(f"查詢: {query}")
+    query_scores = scores[i].tolist()
+    for j, (doc, score) in enumerate(zip(documents, query_scores)):
+        print(f"  文檔{j+1}: {score:.2f} - {doc}")
 ```
 
 ## 注意事項
