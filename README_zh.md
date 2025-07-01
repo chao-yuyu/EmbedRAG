@@ -232,7 +232,7 @@ python merge.py \
     --output_path "output/merged_model"
 ```
 
-### 4. 使用合併後的模型
+### 4. 使用模型評估
 
 > **注意**: 完整的使用範例請參考 `evaluation.ipynb` 文件
 
@@ -253,7 +253,7 @@ def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tenso
         return last_hidden_states[torch.arange(batch_size, device=last_hidden_states.device), sequence_lengths]
 
 # 載入模型和tokenizer
-model_path = "your/merged/model/path"  # 替換為你的合併模型路徑
+model_path = "your/model/path"  # 替換為你的模型路徑
 tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 model = AutoModel.from_pretrained(
     model_path,

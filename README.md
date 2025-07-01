@@ -232,7 +232,7 @@ python merge.py \
     --output_path "output/merged_model"
 ```
 
-### 4. Use Merged Model
+### 4. Use Model Evaluation
 
 > **Note**: For complete usage examples, please refer to the `evaluation.ipynb` file
 
@@ -253,7 +253,7 @@ def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tenso
         return last_hidden_states[torch.arange(batch_size, device=last_hidden_states.device), sequence_lengths]
 
 # Load model and tokenizer
-model_path = "your/merged/model/path"  # Replace with your merged model path
+model_path = "your/model/path"  # Replace with your model path
 tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 model = AutoModel.from_pretrained(
     model_path,
@@ -319,8 +319,8 @@ for i, query in enumerate(queries):
 
 ## Documentation
 
-- [English README](README.md)
-- [Chinese README](README_zh.md)
+- [📖 English README](README.md)
+- [📖 中文說明文檔](README_zh.md)
 
 ## License
 
