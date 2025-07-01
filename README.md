@@ -234,7 +234,7 @@ python merge.py \
 
 ### 4. Use Merged Model
 
-> **Note**: For complete usage examples, please refer to the `eval.ipynb` file
+> **Note**: For complete usage examples, please refer to the `evaluation.ipynb` file
 
 ```python
 import torch

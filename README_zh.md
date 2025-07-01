@@ -234,7 +234,7 @@ python merge.py \
 
 ### 4. 使用合併後的模型
 
-> **注意**: 完整的使用範例請參考 `eval.ipynb` 文件
+> **注意**: 完整的使用範例請參考 `evaluation.ipynb` 文件
 
 ```python
 import torch
