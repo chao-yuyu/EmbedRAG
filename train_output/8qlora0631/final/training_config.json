@@ -1,0 +1,10 @@
+{
+  "finetune_type": "qlora",
+  "model_name_or_path": "/home/asri/RAG-Retrieval/rag_retrieval/train/embedding/output/4500datas_summary20250601_epoch11-20_1e-4_losscheck/checkpoint-epoch-1/merge",
+  "quantization_bits": 8,
+  "lora_r": 8,
+  "lora_alpha": 32,
+  "lora_dropout": 0.1,
+  "temperature": 0.02,
+  "final_epoch": 3
+}

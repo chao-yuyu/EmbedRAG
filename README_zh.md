@@ -122,7 +122,7 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py \
 | `train_dataset` | 訓練資料路徑 | 必填 |
 | `output_dir` | 輸出目錄 | 必填 |
 | `batch_size` | 批次大小 | 必填 |
-| `lr` | 學習率 | 2e-5 |
+| `lr` | 學習率 | 1e-4 |
 | `epochs` | 訓練輪數 | 2 |
 | `neg_nums` | 負例數量 | 2 |
 | `temperature` | 溫度參數 | 0.02 |

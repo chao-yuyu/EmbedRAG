@@ -128,7 +128,7 @@ class EmbeddingDataset(Dataset):
         )
 
 
-class QLoRAEmbeddingModel(torch.nn.Module):
+class EmbeddingModel(torch.nn.Module):
     def __init__(self, model, temperature=0.02):
         super().__init__()
         self.model = model
@@ -230,10 +230,10 @@ def main():
     parser.add_argument("--neg_nums", type=int, default=2)
     parser.add_argument("--query_max_len", type=int, default=256)
     parser.add_argument("--passage_max_len", type=int, default=1024)
-    parser.add_argument("--lr", type=float, default=2e-5)
+    parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--save_on_epoch_end", type=int, default=1)
-    parser.add_argument("--gradient_accumulation_steps", type=int, default=16)
+    parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
     parser.add_argument("--warmup_proportion", type=float, default=0.05)
     parser.add_argument("--temperature", type=float, default=0.02)
     parser.add_argument("--seed", type=int, default=42)
@@ -426,7 +426,7 @@ def main():
         }
     
     # Wrap model with embedding model class
-    model = QLoRAEmbeddingModel(model, temperature=args.temperature)
+    model = EmbeddingModel(model, temperature=args.temperature)
     
     # Create dataset and dataloader
     train_dataset = EmbeddingDataset(

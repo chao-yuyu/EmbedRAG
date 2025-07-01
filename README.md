@@ -122,7 +122,7 @@ CUDA_VISIBLE_DEVICES=0,1 python train.py \
 | `train_dataset` | Training data path | Required |
 | `output_dir` | Output directory | Required |
 | `batch_size` | Batch size | Required |
-| `lr` | Learning rate | 2e-5 |
+| `lr` | Learning rate | 1e-4 |
 | `epochs` | Number of epochs | 2 |
 | `neg_nums` | Number of negative examples | 2 |
 | `temperature` | Temperature parameter | 0.02 |

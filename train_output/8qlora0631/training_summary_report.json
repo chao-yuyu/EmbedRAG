@@ -1,0 +1,61 @@
+{
+  "training_completed": true,
+  "completion_time": "2025-06-30T17:58:28.869439",
+  "total_duration_hours": 0.02594837976826562,
+  "model_info": {
+    "finetune_type": "qlora",
+    "quantization_bits": 8,
+    "total_parameters": 1552501248,
+    "trainable_parameters": 9232384,
+    "trainable_percentage": 0.5946780404778135,
+    "lora_config": {
+      "r": 8,
+      "alpha": 32,
+      "dropout": 0.1
+    }
+  },
+  "training_args": {
+    "model_name_or_path": "/home/asri/RAG-Retrieval/rag_retrieval/train/embedding/output/4500datas_summary20250601_epoch11-20_1e-4_losscheck/checkpoint-epoch-1/merge",
+    "train_dataset": "/home/asri/FlagEmbedding/bge_data_gen/data/1140606/tsd_feedback_data_be200_0606.jsonl",
+    "output_dir": "/home/asri/EmbedRAG/train_output/8qlora0631",
+    "batch_size": 1,
+    "neg_nums": 8,
+    "query_max_len": 128,
+    "passage_max_len": 1000,
+    "lr": 0.0001,
+    "epochs": 3,
+    "save_on_epoch_end": 1,
+    "gradient_accumulation_steps": 16,
+    "warmup_proportion": 0.05,
+    "temperature": 0.02,
+    "seed": 42,
+    "log_with": "tensorboard",
+    "finetune_type": "qlora",
+    "quantization_bits": 8,
+    "lora_r": 8,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1
+  },
+  "performance_summary": {
+    "total_training_time": 93.41416716575623,
+    "total_epochs": 3,
+    "total_steps": 15,
+    "final_loss": 0.005276546813547611,
+    "best_loss": 0.005276546813547611,
+    "avg_step_duration": 5.700554609298706
+  },
+  "loss_progression": [
+    {
+      "epoch": 1,
+      "avg_loss": 0.34615713357925415
+    },
+    {
+      "epoch": 2,
+      "avg_loss": 0.05814744159579277
+    },
+    {
+      "epoch": 3,
+      "avg_loss": 0.005276546813547611
+    }
+  ]
+}
