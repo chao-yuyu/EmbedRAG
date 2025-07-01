@@ -14,15 +14,11 @@ A Transformer-based General Text Embedding model training framework that support
 
 - Python 3.10+
 - CUDA GPU
-- PyTorch
-- Transformers
-- PEFT
-- Accelerate
 
 ## Install Dependencies
 
 ```bash
-pip install torch transformers peft accelerate datasets safetensors bitsandbytes
+pip install -r requirements.txt
 ```
 
 ## Training Data Format

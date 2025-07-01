@@ -14,15 +14,11 @@
 
 - Python 3.10+
 - CUDA GPU
-- PyTorch
-- Transformers
-- PEFT
-- Accelerate
 
 ## 安裝依賴
 
 ```bash
-pip install torch transformers peft accelerate datasets safetensors bitsandbytes
+pip install -r requirements.txt
 ```
 
 ## 訓練資料格式
