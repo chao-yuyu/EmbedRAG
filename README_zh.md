@@ -1,6 +1,6 @@
 # EmbedRAG - Embedding Model Training Framework
 
-一個基於Transformer的embedding模型訓練框架，支持LoRA、QLoRA和全參數微調三種訓練方式，專為檢索增強生成(RAG)場景設計。
+一個基於Transformer的General Text Embedding模型訓練框架，支持LoRA、QLoRA和全參數微調三種訓練方式，專為檢索增強生成(RAG)場景設計。
 
 ## 功能特色
 

@@ -1,6 +1,6 @@
 # EmbedRAG - Embedding Model Training Framework
 
-A Transformer-based embedding model training framework supporting LoRA, QLoRA, and full parameter fine-tuning, specifically designed for Retrieval-Augmented Generation (RAG) scenarios.
+A Transformer-based General Text Embedding model training framework supporting LoRA, QLoRA, and full parameter fine-tuning, specifically designed for Retrieval-Augmented Generation (RAG) scenarios.
 
 ## Features
 
